@@ -65,36 +65,51 @@ class MyClient{
                 dout.flush();
 	
 		int newJobID=0;
+		int serverIndex=0;
+		boolean[] serverAvail = new boolean[typeNum];
+		for(int i=0;i<typeNum;i++){
+			serverAvail[i]=true;
+		}
 		str=din.readLine();
 		string=str.split(" ");
-		while (string[0].equals("JOBN")){
-		       	newJobID = Integer.parseInt(string[2]); 
-	                System.out.println("Message: "+str);
+		boolean repeat=true;
+		while (repeat){
+		       	newJobID = Integer.parseInt(string[2]);
 
-			dout.write(("SCHD "+ newJobID  +" "+ type +" 0\n").getBytes());
+			if(serverIndex==typeNum){
+				serverIndex=0;
+			}
+
+			dout.write(("SCHD "+ newJobID  +" "+ type +" "+ serverIndex +"\n").getBytes());
 			dout.flush();
-		
+			
+			System.out.println("SCHD JOB "+newJobID);
+			serverAvail[serverIndex] = false;
+			serverIndex++;
+
 			System.out.println("Message: "+din.readLine());
 
-			//dout.write(("OK\n").getBytes());
-			//dout.flush();
+                        dout.write(("REDY\n").getBytes());
+			dout.flush();
 
-                	//System.out.println("Message: "+din.readLine());
-		
-			dout.write(("REDY\n").getBytes());
-	                dout.flush();
-
-                        str=din.readLine();
+			str=din.readLine();
                 	string=str.split(" "); 
 			System.out.println("Message: "+str);
 			
 			while (string[0].equals("JCPL")){
-                        	dout.write(("REDY\n").getBytes());
-                        	dout.flush();
+				
 
-                        	str=din.readLine();
-                        	string=str.split(" ");
-                	}
+				dout.write(("REDY\n").getBytes());
+                	        dout.flush();
+
+        	                str=din.readLine();
+	                        string=str.split(" ");
+				System.out.println("Message: "+str);
+			}
+
+			if (string[0].equals("NONE")){
+				repeat=false;
+			}
 		}
 		dout.write(("QUIT\n").getBytes());
 		dout.flush();
@@ -103,3 +118,4 @@ class MyClient{
 		s.close();  
 	}	
 }
+
