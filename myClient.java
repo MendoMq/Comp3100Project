@@ -66,10 +66,6 @@ class MyClient{
 	
 		int newJobID=0;
 		int serverIndex=0;
-		boolean[] serverAvail = new boolean[typeNum];
-		for(int i=0;i<typeNum;i++){
-			serverAvail[i]=true;
-		}
 		str=din.readLine();
 		string=str.split(" ");
 		boolean repeat=true;
@@ -84,7 +80,6 @@ class MyClient{
 			dout.flush();
 			
 			System.out.println("SCHD JOB "+newJobID);
-			serverAvail[serverIndex] = false;
 			serverIndex++;
 
 			System.out.println("Message: "+din.readLine());
