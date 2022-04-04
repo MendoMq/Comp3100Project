@@ -22,14 +22,17 @@ class MyClient{
 		dout.write(("REDY\n").getBytes());
 		dout.flush();
 
-                System.out.println("Message: "+din.readLine());
+		str = din.readLine();
+		String[] string = str.split(" ");
+		int newJobID = Integer.parseInt(string[2]);
+                System.out.println("Message: "+str);
 
                 dout.write(("GETS All\n").getBytes());
                 dout.flush();
 		
 		str = din.readLine();
 		System.out.println("Message : "+str);
-		String[] string = str.split(" ");
+		string = str.split(" ");
 		int num = Integer.parseInt(string[1]);
 
 		dout.write(("OK\n").getBytes());
@@ -58,20 +61,17 @@ class MyClient{
 
 		dout.write(("OK\n").getBytes());
 		dout.flush();
-		
-		System.out.println("Message: "+din.readLine());
-		
-		dout.write(("REDY\n").getBytes());
-                dout.flush();
 	
-		int newJobID=0;
 		int serverIndex=0;
+		boolean[] serverAvail = new boolean[typeNum];
+		for(int i=0;i<typeNum;i++){
+			serverAvail[i]=true;
+		}
 		str=din.readLine();
 		string=str.split(" ");
 		boolean repeat=true;
 		while (repeat){
-		       	newJobID = Integer.parseInt(string[2]);
-
+			
 			if(serverIndex==typeNum){
 				serverIndex=0;
 			}
@@ -80,6 +80,7 @@ class MyClient{
 			dout.flush();
 			
 			System.out.println("SCHD JOB "+newJobID);
+			serverAvail[serverIndex] = false;
 			serverIndex++;
 
 			System.out.println("Message: "+din.readLine());
@@ -91,19 +92,20 @@ class MyClient{
                 	string=str.split(" "); 
 			System.out.println("Message: "+str);
 			
+			
 			while (string[0].equals("JCPL")){
-				
-
 				dout.write(("REDY\n").getBytes());
-                	        dout.flush();
+		              	dout.flush();
 
-        	                str=din.readLine();
-	                        string=str.split(" ");
+        	               	str=din.readLine();
+                        	string=str.split(" ");
 				System.out.println("Message: "+str);
 			}
 
 			if (string[0].equals("NONE")){
-				repeat=false;
+                                repeat=false;
+                        }else{
+				newJobID = Integer.parseInt(string[2]);
 			}
 		}
 		dout.write(("QUIT\n").getBytes());
